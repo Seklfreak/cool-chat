@@ -4,6 +4,7 @@ import {store} from "./firebase";
 import {v4 as uuidv4} from 'uuid';
 import moment from "moment";
 import Button from 'react-bootstrap/Button';
+import catNames from "cat-names";
 
 class Message extends React.Component {
     render() {
@@ -11,7 +12,9 @@ class Message extends React.Component {
 
         return (
             <li className={`list-group-item ${this.props.item.completed ? '' : 'list-group-item-warning'}`}>
-                {this.props.item.completed ? (<small>{datetime.fromNow()} </small>) : null}{this.props.item.content}
+                {this.props.item.completed ? (<small>{datetime.fromNow()} </small>) : null}
+                <b>{this.props.item.name} </b>
+                {this.props.item.content}
             </li>
         )
     }
@@ -116,7 +119,8 @@ class ChatInput extends React.Component {
         store.collection('messages').doc(this.state.id).set({
             id: this.state.id,
             timestamp: Date.now(),
-            content: message
+            content: message,
+            name: this.props.name,
         })
             .catch(function (error) {
                 console.error("Error adding document: ", error);
@@ -138,11 +142,29 @@ class ChatInput extends React.Component {
 }
 
 class Chat extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: catNames.random()
+        };
+
+        this.inputRef = React.createRef();
+        this.handleInput = this.handleInput.bind(this);
+    }
+
+    handleInput(event) {
+        event.preventDefault();
+
+        this.setState({name: this.inputRef.current.value})
+    }
+
     render() {
         return (
             <div>
+                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} ref={this.inputRef} defaultValue={this.state.name}/>!</h3>
                 <ChatLog/>
-                <ChatInput/>
+                <ChatInput name={this.state.name}/>
             </div>
         );
     }
@@ -152,7 +174,6 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <h1>Cool chat!</h1>
             </header>
             <Chat/>
         </div>
