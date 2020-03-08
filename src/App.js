@@ -176,8 +176,9 @@ class ChatMembers extends React.Component {
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.setState({ time: this.updateState() }), 5 * 1000);
+        this.interval = setInterval(() => this.setState({time: this.updateState()}), 5 * 1000);
     }
+
     componentWillUnmount() {
         clearInterval(this.interval);
     }
@@ -187,7 +188,7 @@ class ChatMembers extends React.Component {
 
         const memberHTML = members.map((item, i) => {
             return (
-                <b key={item.name}>{item.name}{i+1 < members.length ? ', ' : ''}</b>
+                <b key={item.name}>{item.name}{i + 1 < members.length ? ', ' : ''}</b>
             )
         });
 
@@ -225,7 +226,8 @@ class Chat extends React.Component {
     render() {
         return (
             <div>
-                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} ref={this.inputRef} defaultValue={this.state.name}/>!</h3>
+                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} ref={this.inputRef}
+                                                     defaultValue={this.state.name}/>!</h3>
                 <ChatMembers name={this.state.name}/>
                 <ChatLog/>
                 <ChatInput name={this.state.name}/>
