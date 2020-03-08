@@ -88,11 +88,12 @@ class ChatInput extends React.Component {
         this.handleInput = this.handleInput.bind(this);
     }
 
+    // TODO: handle empty message better…
 
     handleSubmit(event) {
         event.preventDefault();
 
-        let message = this.inputRef.current.value;
+        let message = event.target.value;
         if (message === '') {
             return;
         }
@@ -105,16 +106,13 @@ class ChatInput extends React.Component {
             });
 
         this.setState({id: uuidv4()});
-        this.inputRef.current.value = '';
+        event.target.reset();
     }
 
     handleInput(event) {
         event.preventDefault();
 
-        let message = this.inputRef.current.value;
-        if (message === '') {
-            return;
-        }
+        let message = event.target.value;
 
         store.collection('messages').doc(this.state.id).set({
             id: this.state.id,
@@ -131,7 +129,7 @@ class ChatInput extends React.Component {
         return (
             <form onSubmit={this.handleSubmit}>
                 <div className="input-group">
-                    <textarea className="form-control" onInput={this.handleInput} ref={this.inputRef}/>
+                    <textarea className="form-control" onInput={this.handleInput}/>
                     <div className="input-group-append">
                         <Button type="submit">Submit</Button>
                     </div>
