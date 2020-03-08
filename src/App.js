@@ -39,7 +39,7 @@ class ChatLog extends React.Component {
     }
 
     render() {
-        const { messages } = this.state;
+        const {messages} = this.state;
 
         const messagesHTML = messages.map((item) => {
             if (item.completed !== true) {
@@ -83,7 +83,6 @@ class ChatInput extends React.Component {
             id: uuidv4()
         };
 
-        this.inputRef = React.createRef();
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
     }
@@ -182,7 +181,7 @@ class ChatMembers extends React.Component {
     }
 
     render() {
-        const { members } = this.state;
+        const {members} = this.state;
 
         const memberHTML = members.map((item, i) => {
             return (
@@ -205,8 +204,6 @@ class Chat extends React.Component {
         this.state = {
             name: catNames.random()
         };
-
-        this.handleInput = this.handleInput.bind(this);
     }
 
     handleInput(event) {
@@ -215,6 +212,7 @@ class Chat extends React.Component {
         let name = event.target.value;
         if (name === '') {
             name = catNames.random();
+            event.target.value = name;
         }
 
         this.setState({name: name})
@@ -223,7 +221,8 @@ class Chat extends React.Component {
     render() {
         return (
             <div>
-                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} value={this.state.name}/>!</h3>
+                <h3>Welcome to the cool chat, <input type="text" onChange={e => this.handleInput(e)}
+                                                     defaultValue={this.state.name}/>!</h3>
                 <ChatMembers name={this.state.name}/>
                 <ChatLog/>
                 <ChatInput name={this.state.name}/>
