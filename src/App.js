@@ -52,7 +52,7 @@ class ChatLog extends React.Component {
         });
 
         const typingMessagesHTML = messages.map((item) => {
-            if (item.completed === true) {
+            if (item.completed) {
                 return null;
             }
 
@@ -80,17 +80,16 @@ class ChatInput extends React.Component {
         super(props);
 
         this.state = {
-            id: uuidv4()
+            id: uuidv4(),
+            message: ''
         };
     }
-
-    // TODO: handle empty message better…
 
     handleSubmit(event) {
         event.preventDefault();
 
-        let message = event.target.value;
-        if (message === '') {
+        const { message } = this.state;
+        if (!message) {
             return;
         }
 
@@ -108,7 +107,9 @@ class ChatInput extends React.Component {
     handleInput(event) {
         event.preventDefault();
 
-        let message = event.target.value;
+        const message = event.target.value;
+
+        this.setState({message: message});
 
         store.collection('messages').doc(this.state.id).set({
             id: this.state.id,
@@ -207,7 +208,7 @@ class Chat extends React.Component {
         event.preventDefault();
 
         let name = event.target.value;
-        if (name === '') {
+        if (!name) {
             name = catNames.random();
             event.target.value = name;
         }
