@@ -1,15 +1,18 @@
 import React from 'react';
 import './App.css';
 import {store} from "./firebase";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import moment from "moment";
+import Button from 'react-bootstrap/Button';
 
 class Message extends React.Component {
     render() {
         const datetime = moment(this.props.item.timestamp);
 
         return (
-            <p>{this.props.item.completed ? datetime.fromNow() + ': ': 'Typing… '}{this.props.item.content}</p>
+            <li className={`list-group-item ${this.props.item.completed ? '' : 'list-group-item-warning'}`}>
+                {this.props.item.completed ? (<small>{datetime.fromNow()} </small>) : null}{this.props.item.content}
+            </li>
         )
     }
 }
@@ -22,13 +25,13 @@ class ChatLog extends React.Component {
             messages: []
         };
 
-        store.collection('messages').orderBy('timestamp', 'asc').limit(100).onSnapshot(function (snapshot) {
+        store.collection('messages').orderBy('timestamp', 'desc').limit(10).onSnapshot(function (snapshot) {
             let newMessages = [];
             snapshot.forEach(function (doc) {
                 newMessages.push(doc.data());
             });
 
-            this.setState({messages: newMessages});
+            this.setState({messages: newMessages.reverse()});
         }.bind(this));
     }
 
@@ -41,7 +44,7 @@ class ChatLog extends React.Component {
             }
 
             return (
-                <Message item={item}/>
+                <Message key={item.id} item={item}/>
             )
         });
 
@@ -51,20 +54,20 @@ class ChatLog extends React.Component {
             }
 
             // do not show if pending for more than 60 seconds
-            if ((Date.now() - item.timestamp) > 10*1000) {
+            if ((Date.now() - item.timestamp) > 10 * 1000) {
                 return null;
             }
 
             return (
-                <Message item={item}/>
+                <Message key={item.id} item={item}/>
             )
         });
 
         return (
-            <div>
+            <ul className="list-group">
                 {messagesHTML}
                 {typingMessagesHTML}
-            </div>
+            </ul>
         );
     }
 }
@@ -123,8 +126,12 @@ class ChatInput extends React.Component {
     render() {
         return (
             <form onSubmit={this.handleSubmit}>
-                <textarea onInput={this.handleInput} ref={this.inputRef}/>
-                <input type="submit"/>
+                <div className="input-group">
+                    <textarea className="form-control" onInput={this.handleInput} ref={this.inputRef}/>
+                    <div className="input-group-append">
+                        <Button type="submit">Submit</Button>
+                    </div>
+                </div>
             </form>
         );
     }
