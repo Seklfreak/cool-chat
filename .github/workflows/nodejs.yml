@@ -14,6 +14,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: npm install
     - run: npm run build --if-present
     - name: Deploy to Firebase
       uses: lowply/deploy-firebase@v0.0.2
