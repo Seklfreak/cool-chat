@@ -39,7 +39,7 @@ class ChatLog extends React.Component {
     }
 
     render() {
-        const messages = this.state.messages;
+        const { messages } = this.state;
 
         const messagesHTML = messages.map((item) => {
             if (item.completed !== true) {
@@ -184,7 +184,7 @@ class ChatMembers extends React.Component {
     }
 
     render() {
-        const members = this.state.members;
+        const { members } = this.state;
 
         const memberHTML = members.map((item, i) => {
             return (
