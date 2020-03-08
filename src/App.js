@@ -214,9 +214,9 @@ class Chat extends React.Component {
     handleInput(event) {
         event.preventDefault();
 
-        const name = event.target.value;
+        let name = event.target.value;
         if (name === '') {
-            return;
+            name = catNames.random();
         }
 
         this.setState({name: name})
