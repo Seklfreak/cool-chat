@@ -141,6 +141,64 @@ class ChatInput extends React.Component {
     }
 }
 
+class ChatMembers extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            members: [],
+        };
+
+        this.updateState();
+
+        store.collection('online').orderBy('name', 'desc').onSnapshot(function (snapshot) {
+            let newMembers = [];
+            snapshot.forEach(function (doc) {
+                if ((Date.now() - doc.data().timestamp) > 30 * 1000) {
+                    return null;
+                }
+
+                newMembers.push(doc.data());
+            });
+
+            this.setState({members: newMembers});
+        }.bind(this));
+    }
+
+    updateState() {
+        store.collection('online').doc(this.props.name).set({
+            timestamp: Date.now(),
+            name: this.props.name,
+        })
+            .catch(function (error) {
+                console.error("Error adding document: ", error);
+            });
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(() => this.setState({ time: this.updateState() }), 5 * 1000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    render() {
+        const members = this.state.members;
+
+        const memberHTML = members.map((item, i) => {
+            return (
+                <b key={item.name}>{item.name}{i+1 < members.length ? ', ' : ''}</b>
+            )
+        });
+
+        return (
+            <div>
+                <p>Online right now ({members.length}): {memberHTML}</p>
+            </div>
+        )
+    }
+}
+
 class Chat extends React.Component {
     constructor(props) {
         super(props);
@@ -156,13 +214,19 @@ class Chat extends React.Component {
     handleInput(event) {
         event.preventDefault();
 
-        this.setState({name: this.inputRef.current.value})
+        const name = this.inputRef.current.value;
+        if (name === '') {
+            return;
+        }
+
+        this.setState({name: name})
     }
 
     render() {
         return (
             <div>
                 <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} ref={this.inputRef} defaultValue={this.state.name}/>!</h3>
+                <ChatMembers name={this.state.name}/>
                 <ChatLog/>
                 <ChatInput name={this.state.name}/>
             </div>
