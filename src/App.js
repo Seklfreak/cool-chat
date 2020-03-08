@@ -28,14 +28,14 @@ class ChatLog extends React.Component {
             messages: []
         };
 
-        store.collection('messages').orderBy('timestamp', 'desc').limit(10).onSnapshot(function (snapshot) {
+        store.collection('messages').orderBy('timestamp', 'desc').limit(10).onSnapshot(snapshot => {
             let newMessages = [];
-            snapshot.forEach(function (doc) {
+            snapshot.forEach(doc => {
                 newMessages.push(doc.data());
             });
 
             this.setState({messages: newMessages.reverse()});
-        }.bind(this));
+        });
     }
 
     render() {
@@ -96,7 +96,7 @@ class ChatInput extends React.Component {
         store.collection('messages').doc(this.state.id).update({
             completed: true
         })
-            .catch(function (error) {
+            .catch(error => {
                 console.error("Error adding document: ", error);
             });
 
@@ -117,7 +117,7 @@ class ChatInput extends React.Component {
             content: message,
             name: this.props.name,
         })
-            .catch(function (error) {
+            .catch(error => {
                 console.error("Error adding document: ", error);
             });
     }
@@ -146,9 +146,9 @@ class ChatMembers extends React.Component {
 
         this.updateState();
 
-        store.collection('online').orderBy('name', 'desc').onSnapshot(function (snapshot) {
+        store.collection('online').orderBy('name', 'desc').onSnapshot(snapshot =>  {
             let newMembers = [];
-            snapshot.forEach(function (doc) {
+            snapshot.forEach(doc => {
                 if ((Date.now() - doc.data().timestamp) > 30 * 1000) {
                     return null;
                 }
@@ -157,7 +157,7 @@ class ChatMembers extends React.Component {
             });
 
             this.setState({members: newMembers});
-        }.bind(this));
+        });
     }
 
     updateState() {
@@ -165,7 +165,7 @@ class ChatMembers extends React.Component {
             timestamp: Date.now(),
             name: this.props.name,
         })
-            .catch(function (error) {
+            .catch(error => {
                 console.error("Error adding document: ", error);
             });
     }
