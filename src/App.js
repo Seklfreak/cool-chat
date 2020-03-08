@@ -82,9 +82,6 @@ class ChatInput extends React.Component {
         this.state = {
             id: uuidv4()
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInput = this.handleInput.bind(this);
     }
 
     // TODO: handle empty message better…
@@ -126,9 +123,9 @@ class ChatInput extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={e => this.handleSubmit(e)}>
                 <div className="input-group">
-                    <textarea className="form-control" onInput={this.handleInput}/>
+                    <textarea className="form-control" onInput={e => this.handleInput(e)}/>
                     <div className="input-group-append">
                         <Button type="submit">Submit</Button>
                     </div>
