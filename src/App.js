@@ -208,14 +208,13 @@ class Chat extends React.Component {
             name: catNames.random()
         };
 
-        this.inputRef = React.createRef();
         this.handleInput = this.handleInput.bind(this);
     }
 
     handleInput(event) {
         event.preventDefault();
 
-        const name = this.inputRef.current.value;
+        const name = event.target.value;
         if (name === '') {
             return;
         }
@@ -226,8 +225,7 @@ class Chat extends React.Component {
     render() {
         return (
             <div>
-                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} ref={this.inputRef}
-                                                     defaultValue={this.state.name}/>!</h3>
+                <h3>Welcome to the cool chat, <input type="text" onChange={this.handleInput} value={this.state.name}/>!</h3>
                 <ChatMembers name={this.state.name}/>
                 <ChatLog/>
                 <ChatInput name={this.state.name}/>
