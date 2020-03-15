@@ -160,7 +160,7 @@ class ChatMembers extends React.Component {
     }
 
     updateState() {
-        store.collection('online').doc(this.props.name).set({
+        store.collection('online').doc(this.props.userID).set({
             timestamp: Date.now(),
             name: this.props.name,
         })
@@ -242,7 +242,7 @@ class Chat extends React.Component {
             <div>
                 <h3>Welcome to the cool chat, <input type="text" onChange={e => this.handleInput(e)}
                                                      defaultValue={this.state.name}/>!</h3>
-                <ChatMembers name={this.state.name}/>
+                <ChatMembers name={this.state.name} userID={this.state.user.uid}/>
                 <ChatLog/>
                 <ChatInput name={this.state.name}/>
             </div>
