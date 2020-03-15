@@ -115,6 +115,7 @@ class ChatInput extends React.Component {
             timestamp: Date.now(),
             content: message,
             name: this.props.name,
+            userID: this.props.userID,
         })
             .catch(error => {
                 console.error("Error adding document: ", error);
@@ -244,7 +245,7 @@ class Chat extends React.Component {
                                                      defaultValue={this.state.name}/>!</h3>
                 <ChatMembers name={this.state.name} userID={this.state.user.uid}/>
                 <ChatLog/>
-                <ChatInput name={this.state.name}/>
+                <ChatInput name={this.state.name} userID={this.state.user.uid}/>
             </div>
         );
     }
