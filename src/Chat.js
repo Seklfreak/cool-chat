@@ -171,7 +171,7 @@ class ChatMembers extends React.Component {
     }
 
     componentDidMount() {
-        this.interval = setInterval(() => this.setState({time: this.updateState()}), 5 * 1000);
+        this.interval = setInterval(() => this.setState({time: this.updateState()}), 2.5 * 1000);
     }
 
     componentWillUnmount() {
