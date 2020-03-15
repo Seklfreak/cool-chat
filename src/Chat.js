@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import {store} from "./firebase";
+import {auth, store} from "./firebase";
 import {v4 as uuidv4} from "uuid";
 import Button from "react-bootstrap/Button";
 import catNames from "cat-names";
@@ -199,8 +199,21 @@ class Chat extends React.Component {
         super(props);
 
         this.state = {
-            name: catNames.random()
+            name: catNames.random(),
+            user: null
         };
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                this.setState({user: user});
+            } else {
+                this.setState({user: null});
+            }
+        });
+
+        auth.signInAnonymously().catch(function (error) {
+            console.log(error);
+        });
     }
 
     handleInput(event) {
@@ -216,6 +229,15 @@ class Chat extends React.Component {
     }
 
     render() {
+        // wait for login
+        if (!this.state.user) {
+            return (
+                <div>
+                    Loading…
+                </div>
+            )
+        }
+
         return (
             <div>
                 <h3>Welcome to the cool chat, <input type="text" onChange={e => this.handleInput(e)}
