@@ -114,8 +114,8 @@ class ChatInput extends React.Component {
             id: this.state.id,
             timestamp: Date.now(),
             content: message,
-            name: this.props.name,
-            userID: this.props.userID,
+            name: this.props.user.displayName,
+            userID: this.props.user.uid,
         })
             .catch(error => {
                 console.error("Error adding document: ", error);
@@ -161,9 +161,9 @@ class ChatMembers extends React.Component {
     }
 
     updateState() {
-        store.collection('online').doc(this.props.userID).set({
+        store.collection('online').doc(this.props.user.uid).set({
             timestamp: Date.now(),
-            name: this.props.name,
+            name: this.props.user.displayName,
         })
             .catch(error => {
                 console.error("Error adding document: ", error);
@@ -206,19 +206,30 @@ class Chat extends React.Component {
 
         auth.onAuthStateChanged(user => {
             if (user) {
+                if (!user.displayName) {
+                    user.updateProfile({displayName: catNames.random()}).catch(error => {
+                            console.error("Error updating profile with initial name:", error);
+                        }
+                    )
+                }
+
                 this.setState({user: user});
             } else {
                 this.setState({user: null});
             }
         });
 
-        auth.signInAnonymously().catch(function (error) {
-            console.log(error);
+        auth.signInAnonymously().catch(error => {
+            console.error("Error singing in anonymously:", error);
         });
     }
 
     handleInput(event) {
         event.preventDefault();
+
+        if (!this.state.user) {
+            return;
+        }
 
         let name = event.target.value;
         if (!name) {
@@ -226,7 +237,10 @@ class Chat extends React.Component {
             event.target.value = name;
         }
 
-        this.setState({name: name})
+        this.state.user.updateProfile({displayName: name}).catch(error => {
+                console.error("Error updating users name:", error);
+            }
+        );
     }
 
     render() {
@@ -242,10 +256,10 @@ class Chat extends React.Component {
         return (
             <div>
                 <h3>Welcome to the cool chat, <input type="text" onChange={e => this.handleInput(e)}
-                                                     defaultValue={this.state.name}/>!</h3>
-                <ChatMembers name={this.state.name} userID={this.state.user.uid}/>
+                                                     defaultValue={this.state.user.displayName}/>!</h3>
+                <ChatMembers user={this.state.user}/>
                 <ChatLog/>
-                <ChatInput name={this.state.name} userID={this.state.user.uid}/>
+                <ChatInput user={this.state.user}/>
             </div>
         );
     }
